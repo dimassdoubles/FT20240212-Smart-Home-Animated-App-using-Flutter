@@ -9,16 +9,39 @@ class ShimmerArrows extends StatefulWidget {
   State<ShimmerArrows> createState() => _ShimmerArrowsState();
 }
 
-class _ShimmerArrowsState extends State<ShimmerArrows> {
+class _ShimmerArrowsState extends State<ShimmerArrows>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController.unbounded(vsync: this)
+      ..repeat(min: -0.5, max: 1.5, period: const Duration(seconds: 1));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) => const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white10, Colors.white, Colors.white10],
-        stops: [0.0, 0.3, 1],
-      ).createShader(bounds),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [Colors.white10, Colors.white, Colors.white10],
+            stops: const [0.0, 0.3, 1],
+            transform: _SlideGradientTransform(percent: _controller.value),
+          ).createShader(bounds),
+          child: child,
+        );
+      },
       child: const Column(
         children: [
           Align(heightFactor: .4, child: Icon(SHIcons.arrowUp)),
@@ -27,5 +50,16 @@ class _ShimmerArrowsState extends State<ShimmerArrows> {
         ],
       ),
     );
+  }
+}
+
+class _SlideGradientTransform extends GradientTransform {
+  final double percent;
+
+  const _SlideGradientTransform({required this.percent});
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(0, -(bounds.height * percent), 0);
   }
 }
