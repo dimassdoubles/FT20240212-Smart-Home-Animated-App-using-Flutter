@@ -6,15 +6,27 @@ import '../../../../core/theme/sh_colors.dart';
 class PageIndicators extends StatelessWidget {
   const PageIndicators({
     super.key,
+    required this.selectedRoomNotifier,
   });
+
+  final ValueNotifier selectedRoomNotifier;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: PageViewIndicators(
-        length: SmartRoom.fakeValues.length,
-        pageIndex: 2,
-      ),
+    return ValueListenableBuilder(
+      valueListenable: selectedRoomNotifier,
+      builder: (_, selectedRoom, __) {
+        return AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: selectedRoom == -1 ? 1 : 0,
+          child: Center(
+            child: PageViewIndicators(
+              length: SmartRoom.fakeValues.length,
+              pageIndex: 2,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -32,28 +44,30 @@ class PageViewIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final index = pageIndex;
-    return SizedBox(
-      height: 12,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (int i = 0; i < length; i++) ...[
-                const _Dot(),
-                if (i < length - 1) const SizedBox(width: 16),
+    return Builder(builder: (context) {
+      return SizedBox(
+        height: 12,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < length; i++) ...[
+                  const _Dot(),
+                  if (i < length - 1) const SizedBox(width: 16),
+                ],
               ],
-            ],
-          ),
-          Positioned(
-            left: (16 * index) + (6 * index),
-            child: const _BorderDot(),
-          )
-        ],
-      ),
-    );
+            ),
+            Positioned(
+              left: (16 * index) + (6 * index),
+              child: const _BorderDot(),
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 

@@ -18,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final controller = PageController(viewportFraction: 0.8);
 
   final ValueNotifier<double> pageNotifier = ValueNotifier(0);
+  final ValueNotifier<int> roomSelectorNotifier = ValueNotifier(-1);
 
   @override
   void initState() {
@@ -58,13 +59,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     SmartRoomsPageView(
                       controller: controller,
                       pageNotifier: pageNotifier,
+                      roomSelectorNotifier: roomSelectorNotifier,
                     ),
-                    const Positioned.fill(
+                    Positioned.fill(
                       top: null,
                       child: Column(
                         children: [
-                          PageIndicators(),
-                          SmHomeBottomNavigationBar(),
+                          PageIndicators(
+                            selectedRoomNotifier: roomSelectorNotifier,
+                          ),
+                          SmHomeBottomNavigationBar(
+                            selectedRoomNotifier: roomSelectorNotifier,
+                          ),
                         ],
                       ),
                     ),

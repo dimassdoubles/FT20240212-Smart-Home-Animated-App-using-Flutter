@@ -17,7 +17,7 @@ class BackgroundRoomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform(
-      transform: Matrix4.translationValues(0, 80 * translation, 0),
+      transform: Matrix4.translationValues(0, 160 * translation, 0),
       child: DecoratedBox(
         decoration: const BoxDecoration(
           color: SHColors.cardColor,

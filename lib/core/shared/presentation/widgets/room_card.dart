@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:smart_home_animation/features/home/presentation/widgets/background_room_lights.dart';
 import 'package:ui_common/ui_common.dart';
@@ -34,33 +36,39 @@ class RoomCard extends StatelessWidget {
           // -----------------------------------------------
           // Background information card
           // -----------------------------------------------
-          Padding(
-            padding: const EdgeInsets.only(bottom: 180),
-            child: BackgroundRoomCard(room: room, translation: value),
+          Transform.scale(
+            scale: lerpDouble(0.85, 1.2, value),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 260),
+              child: BackgroundRoomCard(room: room, translation: value),
+            ),
           ),
           // -----------------------------------------------
           // Room image card with parallax effect
           // -----------------------------------------------
           Padding(
             padding: const EdgeInsets.only(bottom: 200),
-            child: GestureDetector(
-              onTap: onTap,
-              onVerticalDragUpdate: (details) {
-                if (details.primaryDelta! < -10) onSwipeUp();
-                if (details.primaryDelta! > 10) onSwipeDown();
-              },
-              child: Stack(
-                fit: StackFit.expand,
-                clipBehavior: Clip.none,
-                children: [
-                  ParallaxImageCard(
-                    imageUrl: room.imageUrl,
-                    parallaxValue: percent,
-                  ),
-                  VerticalRoomTitle(room: room),
-                  const CameraIconButton(),
-                  const AnimatedUpwardArrows()
-                ],
+            child: Transform(
+              transform: Matrix4.translationValues(0, -90 * value, 0),
+              child: GestureDetector(
+                onTap: onTap,
+                onVerticalDragUpdate: (details) {
+                  if (details.primaryDelta! < -10) onSwipeUp();
+                  if (details.primaryDelta! > 10) onSwipeDown();
+                },
+                child: Stack(
+                  fit: StackFit.expand,
+                  clipBehavior: Clip.none,
+                  children: [
+                    ParallaxImageCard(
+                      imageUrl: room.imageUrl,
+                      parallaxValue: percent,
+                    ),
+                    VerticalRoomTitle(room: room),
+                    const CameraIconButton(),
+                    const AnimatedUpwardArrows()
+                  ],
+                ),
               ),
             ),
           ),
