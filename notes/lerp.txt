@@ -1,0 +1,22 @@
+lerp: linear interpolation
+
+lerp ada 3 parameter: start, end, dan interpolation point (t)
+t biasanya adalah nilai 0 - 1
+
+misal:
+start = 1
+end = -1
+t = 0.5
+maka nilai yang dikembalikan adalah 0;
+
+dalam kasus project ini, fungsi lerp digunakan untuk effect parallax
+effect parallax menggunakan kembalian posisi dari page controller 
+jika di swipe kiri -> kanan nilai kembaliannya semakin kecil
+
+dengan lerpDouble(.5 (start), -.5 (end), pagePosition)
+maka ketika swipe kiri -> kanan, dia akan mengubah nilai pagePosition
+dari yang seharusnya semakin mengecil
+jadi semakin besar
+
+
+
