@@ -26,6 +26,7 @@ class SmartRoomsPageView extends StatelessWidget {
             itemBuilder: (_, index) {
               final room = SmartRoom.fakeValues[index];
               double percent = page - index;
+              debugPrint('${room.name} Hello percent pageView: $percent');
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: RoomCard(

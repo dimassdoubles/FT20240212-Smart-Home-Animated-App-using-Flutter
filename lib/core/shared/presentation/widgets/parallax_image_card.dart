@@ -12,7 +12,7 @@ class ParallaxImageCard extends StatelessWidget {
   final double parallaxValue;
 
   BoxDecoration get _perallaxUrlImageDecoration => BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         color: SHColors.hintColor,
         boxShadow: const [
           BoxShadow(
@@ -26,6 +26,9 @@ class ParallaxImageCard extends StatelessWidget {
           fit: BoxFit.cover,
           colorFilter:
               const ColorFilter.mode(Colors.black26, BlendMode.colorBurn),
+
+          // pake LERP agar ketika swike kiri -> kanan
+          // gambarnya gerak kanan -> kiri
           alignment: Alignment(lerpDouble(.5, -.5, parallaxValue)!, 0),
         ),
       );
@@ -40,6 +43,7 @@ class ParallaxImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Lerp value: ${lerpDouble(.5, -.5, parallaxValue)}');
     return Stack(
       fit: StackFit.expand,
       children: [
