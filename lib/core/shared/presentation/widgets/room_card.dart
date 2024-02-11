@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:smart_home_animation/features/home/presentation/widgets/background_room_lights.dart';
+import 'package:smart_home_animation/features/smart_room/screens/room_details_screen.dart';
 import 'package:ui_common/ui_common.dart';
 
 import '../../../core.dart';
@@ -56,18 +57,33 @@ class RoomCard extends StatelessWidget {
                   if (details.primaryDelta! < -10) onSwipeUp();
                   if (details.primaryDelta! > 10) onSwipeDown();
                 },
-                child: Stack(
-                  fit: StackFit.expand,
-                  clipBehavior: Clip.none,
-                  children: [
-                    ParallaxImageCard(
-                      imageUrl: room.imageUrl,
-                      parallaxValue: percent,
-                    ),
-                    VerticalRoomTitle(room: room),
-                    const CameraIconButton(),
-                    const AnimatedUpwardArrows()
-                  ],
+                child: Hero(
+                  tag: room.id,
+                  flightShuttleBuilder: (_, animation, __, ___, ____) {
+                    return AnimatedBuilder(
+                      animation: animation,
+                      builder: (_, child) {
+                        return RoomDetailItems(
+                          room: room,
+                          topPadding: context.mediaQuery.padding.top,
+                          animation: animation,
+                        );
+                      },
+                    );
+                  },
+                  child: Stack(
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.none,
+                    children: [
+                      ParallaxImageCard(
+                        imageUrl: room.imageUrl,
+                        parallaxValue: percent,
+                      ),
+                      VerticalRoomTitle(room: room),
+                      const CameraIconButton(),
+                      const AnimatedUpwardArrows()
+                    ],
+                  ),
                 ),
               ),
             ),

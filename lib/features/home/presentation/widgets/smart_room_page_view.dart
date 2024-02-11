@@ -63,13 +63,24 @@ class SmartRoomsPageView extends StatelessWidget {
                         onSwipeUp: () => roomSelectorNotifier.value = index,
                         onSwipeDown: () => roomSelectorNotifier.value = -1,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RoomDetailScreen(room: room),
-                            ),
-                          );
+                          if (selectedRoom == index || true) {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration:
+                                    const Duration(milliseconds: 800),
+                                reverseTransitionDuration:
+                                    const Duration(milliseconds: 800),
+                                pageBuilder: (_, animation, __) =>
+                                    FadeTransition(
+                                  opacity: animation,
+                                  child: RoomDetailScreen(room: room),
+                                ),
+                              ),
+                            );
+
+                            roomSelectorNotifier.value = -1;
+                          }
                         },
                       ),
                     );

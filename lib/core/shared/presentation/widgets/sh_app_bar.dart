@@ -15,7 +15,7 @@ class ShAppBar extends StatelessWidget implements PreferredSizeWidget {
           type: MaterialType.transparency,
           child: IconButton(
             onPressed: () {},
-            icon: const Icon(SHIcons.menu),
+            icon: const Icon(SHIcons.menu, color: Colors.white),
           ),
         ),
       ),
@@ -26,7 +26,7 @@ class ShAppBar extends StatelessWidget implements PreferredSizeWidget {
             type: MaterialType.transparency,
             child: IconButton(
               onPressed: () {},
-              icon: const Icon(SHIcons.search),
+              icon: const Icon(SHIcons.search, color: Colors.white),
             ),
           ),
         ),

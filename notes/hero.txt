@@ -1,0 +1,4 @@
+hero digunakan ketika ingin pindah ke detail ruangan
+dengan hero, tercipta efek seolah-olah
+gambar di kartu ruangan, akan membesar
+menjadi latar belakang di halamn detail ruangan
