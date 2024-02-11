@@ -10,14 +10,14 @@ class ShimmerArrows extends StatefulWidget {
 }
 
 class _ShimmerArrowsState extends State<ShimmerArrows>
-    with TickerProviderStateMixin {
-  late final AnimationController _controller;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
   @override
   void initState() {
+    super.initState();
     _controller = AnimationController.unbounded(vsync: this)
       ..repeat(min: -0.5, max: 1.5, period: const Duration(seconds: 1));
-    super.initState();
   }
 
   @override
@@ -26,21 +26,19 @@ class _ShimmerArrowsState extends State<ShimmerArrows>
     super.dispose();
   }
 
-  Gradient get gradient => LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: const [Colors.white10, Colors.white, Colors.white10],
-        stops: const [0.0, 0.3, 1],
-        transform: _SlideGradientTransform(_controller.value),
-      );
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (_, child) {
+      builder: (context, child) {
         return ShaderMask(
-          shaderCallback: (bounds) => gradient.createShader(bounds),
+          shaderCallback: (bounds) => LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [Colors.white10, Colors.white, Colors.white10],
+            stops: const [0.0, 0.3, 1],
+            transform: _SlideGradientTransform(percent: _controller.value),
+          ).createShader(bounds),
           child: child,
         );
       },
@@ -56,11 +54,12 @@ class _ShimmerArrowsState extends State<ShimmerArrows>
 }
 
 class _SlideGradientTransform extends GradientTransform {
-  const _SlideGradientTransform(this.percent);
-
   final double percent;
 
+  const _SlideGradientTransform({required this.percent});
+
   @override
-  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) =>
-      Matrix4.translationValues(0, -(bounds.height * percent), 0);
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(0, -(bounds.height * percent), 0);
+  }
 }

@@ -10,24 +10,22 @@ import 'music_switchers.dart';
 
 class RoomDetailsPageView extends StatelessWidget {
   const RoomDetailsPageView({
-    required this.animation,
     required this.room,
     super.key,
+    required this.animation,
   });
 
-  final Animation<double> animation;
   final SmartRoom room;
+  final Animation<double> animation;
 
   Animation<double> get _interval1 => CurvedAnimation(
         parent: animation,
         curve: const Interval(0.4, 1, curve: Curves.easeIn),
       );
-
   Animation<double> get _interval2 => CurvedAnimation(
         parent: animation,
         curve: const Interval(0.6, 1, curve: Curves.easeIn),
       );
-
   Animation<double> get _interval3 => CurvedAnimation(
         parent: animation,
         curve: const Interval(0.8, 1, curve: Curves.easeIn),
@@ -69,10 +67,9 @@ class RoomDetailsPageView extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
                   children: [
                     SlideTransition(
-                      position: Tween(
-                        begin: const Offset(0, 2),
-                        end: Offset.zero,
-                      ).animate(_interval1),
+                      position:
+                          Tween(begin: const Offset(0, 2), end: Offset.zero)
+                              .animate(_interval1),
                       child: FadeTransition(
                         opacity: _interval1,
                         child: Row(
@@ -88,26 +85,20 @@ class RoomDetailsPageView extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     SlideTransition(
-                      position: Tween(
-                        begin: const Offset(0, 2),
-                        end: Offset.zero,
-                      ).animate(_interval2),
-                      child: FadeTransition(
-                        opacity: _interval2,
-                        child: LightIntensitySliderCard(room: room),
-                      ),
-                    ),
+                        position:
+                            Tween(begin: const Offset(0, 2), end: Offset.zero)
+                                .animate(_interval2),
+                        child: FadeTransition(
+                            opacity: _interval2,
+                            child: LightIntensitySliderCard(room: room))),
                     const SizedBox(height: 20),
                     SlideTransition(
-                      position: Tween(
-                        begin: const Offset(0, 2),
-                        end: Offset.zero,
-                      ).animate(_interval1),
-                      child: FadeTransition(
-                        opacity: _interval3,
-                        child: AirConditionerControlsCard(room: room),
-                      ),
-                    ),
+                        position:
+                            Tween(begin: const Offset(0, 2), end: Offset.zero)
+                                .animate(_interval3),
+                        child: FadeTransition(
+                            opacity: _interval3,
+                            child: AirConditionerControlsCard(room: room))),
                   ],
                 ),
               ),

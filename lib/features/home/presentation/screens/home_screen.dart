@@ -16,13 +16,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final controller = PageController(viewportFraction: 0.8);
+
   final ValueNotifier<double> pageNotifier = ValueNotifier(0);
   final ValueNotifier<int> roomSelectorNotifier = ValueNotifier(-1);
 
   @override
   void initState() {
-    controller.addListener(pageListener);
     super.initState();
+    controller.addListener(pageListener);
   }
 
   @override
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     controller
       ..removeListener(pageListener)
       ..dispose();
+
     super.dispose();
   }
 
@@ -55,20 +57,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   clipBehavior: Clip.none,
                   children: [
                     SmartRoomsPageView(
+                      controller: controller,
                       pageNotifier: pageNotifier,
                       roomSelectorNotifier: roomSelectorNotifier,
-                      controller: controller,
                     ),
                     Positioned.fill(
                       top: null,
                       child: Column(
                         children: [
                           PageIndicators(
-                            roomSelectorNotifier: roomSelectorNotifier,
+                            selectedRoomNotifier: roomSelectorNotifier,
                             pageNotifier: pageNotifier,
                           ),
                           SmHomeBottomNavigationBar(
-                            roomSelectorNotifier: roomSelectorNotifier,
+                            selectedRoomNotifier: roomSelectorNotifier,
                           ),
                         ],
                       ),

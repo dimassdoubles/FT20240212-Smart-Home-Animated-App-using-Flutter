@@ -6,33 +6,33 @@ import '../../../../core/theme/sh_colors.dart';
 class PageIndicators extends StatelessWidget {
   const PageIndicators({
     super.key,
-    required this.roomSelectorNotifier,
+    required this.selectedRoomNotifier,
     required this.pageNotifier,
   });
 
-  final ValueNotifier<int> roomSelectorNotifier;
-  final ValueNotifier<double> pageNotifier;
+  final ValueNotifier selectedRoomNotifier;
+  final ValueNotifier pageNotifier;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: roomSelectorNotifier,
-      builder: (_, value, child) => AnimatedOpacity(
-        opacity: value != -1 ? 0 : 1,
-        duration: value != -1
-            ? const Duration(milliseconds: 1)
-            : const Duration(milliseconds: 400),
-        child: child,
-      ),
-      child: ValueListenableBuilder<double>(
-        valueListenable: pageNotifier,
-        builder: (_, value, __) => Center(
-          child: PageViewIndicators(
-            length: SmartRoom.fakeValues.length,
-            pageIndex: value,
-          ),
-        ),
-      ),
+    return ValueListenableBuilder(
+      valueListenable: selectedRoomNotifier,
+      builder: (_, selectedRoom, __) {
+        return AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: selectedRoom == -1 ? 1 : 0,
+          child: ValueListenableBuilder(
+              valueListenable: pageNotifier,
+              builder: (_, page, __) {
+                return Center(
+                  child: PageViewIndicators(
+                    length: SmartRoom.fakeValues.length,
+                    pageIndex: page,
+                  ),
+                );
+              }),
+        );
+      },
     );
   }
 }
@@ -50,28 +50,30 @@ class PageViewIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final index = pageIndex;
-    return SizedBox(
-      height: 12,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (int i = 0; i < length; i++) ...[
-                const _Dot(),
-                if (i < length - 1) const SizedBox(width: 16),
+    return Builder(builder: (context) {
+      return SizedBox(
+        height: 12,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < length; i++) ...[
+                  const _Dot(),
+                  if (i < length - 1) const SizedBox(width: 16),
+                ],
               ],
-            ],
-          ),
-          Positioned(
-            left: (16 * index) + (6 * index),
-            child: const _BorderDot(),
-          )
-        ],
-      ),
-    );
+            ),
+            Positioned(
+              left: (16 * index) + (6 * index),
+              child: const _BorderDot(),
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 

@@ -7,69 +7,86 @@ import '../../../smart_room/screens/room_details_screen.dart';
 class SmartRoomsPageView extends StatelessWidget {
   const SmartRoomsPageView({
     super.key,
+    required this.controller,
     required this.pageNotifier,
     required this.roomSelectorNotifier,
-    required this.controller,
   });
 
-  final ValueNotifier<double> pageNotifier;
-  final ValueNotifier<int> roomSelectorNotifier;
   final PageController controller;
+  final ValueNotifier pageNotifier;
+  final ValueNotifier roomSelectorNotifier;
 
-  double _getOffsetX(double percent) => percent.isNegative ? 30.0 : -30.0;
+  double _getOffsetX(double percent) => percent.isNegative ? 30 : -30;
+  Matrix4 _getOutTranslate({
+    required double percent,
+    required int selectedRoom,
+    required int index,
+  }) {
+    // menyingkirkan card yang tidak ditengah
+    // ketika card ditengah di expand (diswipe ke atas)
+    final double x =
+        selectedRoom != index && selectedRoom != -1 ? _getOffsetX(percent) : 0;
 
-  Matrix4 _getOutTranslate(double percent, int selected, int index) {
-    final x = selected != index && selected != -1 ? _getOffsetX(percent) : 0.0;
     return Matrix4.translationValues(x, 0, 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<double>(
-      valueListenable: pageNotifier,
-      builder: (_, page, __) => ValueListenableBuilder(
-        valueListenable: roomSelectorNotifier,
-        builder: (_, selected, __) => PageView.builder(
-          clipBehavior: Clip.none,
-          itemCount: SmartRoom.fakeValues.length,
-          controller: controller,
-          itemBuilder: (_, index) {
-            final percent = page - index;
-            final isSelected = selected == index;
-            final room = SmartRoom.fakeValues[index];
-            return AnimatedContainer(
-              duration: kThemeAnimationDuration,
-              curve: Curves.fastOutSlowIn,
-              transform: _getOutTranslate(percent, selected, index),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: RoomCard(
-                percent: percent,
-                expand: isSelected,
-                room: room,
-                onSwipeUp: () => roomSelectorNotifier.value = index,
-                onSwipeDown: () => roomSelectorNotifier.value = -1,
-                onTap: () async {
-                  if (isSelected) {
-                    await Navigator.push(
-                      context,
-                      PageRouteBuilder<void>(
-                        transitionDuration: const Duration(milliseconds: 800),
-                        reverseTransitionDuration:
-                            const Duration(milliseconds: 800),
-                        pageBuilder: (_, animation, __) => FadeTransition(
-                          opacity: animation,
-                          child: RoomDetailScreen(room: room),
-                        ),
+    return ValueListenableBuilder(
+        valueListenable: pageNotifier,
+        builder: (_, page, __) {
+          return ValueListenableBuilder(
+              valueListenable: roomSelectorNotifier,
+              builder: (_, selectedRoom, __) {
+                return PageView.builder(
+                  controller: controller,
+                  clipBehavior: Clip.none,
+                  itemCount: SmartRoom.fakeValues.length,
+                  itemBuilder: (_, index) {
+                    final room = SmartRoom.fakeValues[index];
+                    double percent = page - index;
+                    debugPrint('${room.name} Hello percent pageView: $percent');
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.fastOutSlowIn,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      transform: _getOutTranslate(
+                        percent: percent,
+                        selectedRoom: selectedRoom,
+                        index: index,
+                      ),
+                      child: RoomCard(
+                        percent: percent,
+                        // If -1 then no item is selected
+                        expand: selectedRoom == index,
+                        room: room,
+                        onSwipeUp: () => roomSelectorNotifier.value = index,
+                        onSwipeDown: () => roomSelectorNotifier.value = -1,
+                        onTap: () {
+                          if (selectedRoom == index || true) {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration:
+                                    const Duration(milliseconds: 800),
+                                reverseTransitionDuration:
+                                    const Duration(milliseconds: 800),
+                                pageBuilder: (_, animation, __) =>
+                                    FadeTransition(
+                                  opacity: animation,
+                                  child: RoomDetailScreen(room: room),
+                                ),
+                              ),
+                            );
+
+                            roomSelectorNotifier.value = -1;
+                          }
+                        },
                       ),
                     );
-                    roomSelectorNotifier.value = -1;
-                  }
-                },
-              ),
-            );
-          },
-        ),
-      ),
-    );
+                  },
+                );
+              });
+        });
   }
 }
