@@ -7,9 +7,11 @@ class PageIndicators extends StatelessWidget {
   const PageIndicators({
     super.key,
     required this.selectedRoomNotifier,
+    required this.pageNotifier,
   });
 
   final ValueNotifier selectedRoomNotifier;
+  final ValueNotifier pageNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +21,16 @@ class PageIndicators extends StatelessWidget {
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: selectedRoom == -1 ? 1 : 0,
-          child: Center(
-            child: PageViewIndicators(
-              length: SmartRoom.fakeValues.length,
-              pageIndex: 2,
-            ),
-          ),
+          child: ValueListenableBuilder(
+              valueListenable: pageNotifier,
+              builder: (_, page, __) {
+                return Center(
+                  child: PageViewIndicators(
+                    length: SmartRoom.fakeValues.length,
+                    pageIndex: page,
+                  ),
+                );
+              }),
         );
       },
     );
